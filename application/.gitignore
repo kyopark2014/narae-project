@@ -1,0 +1,6 @@
+__pycache__
+
+# configuration
+config.json
+*.js
+*/
