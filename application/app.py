@@ -25,7 +25,7 @@ logger = logging.getLogger("streamlit")
 config = utils.load_config()
 
 # title
-st.set_page_config(page_title='Strands Skills', page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
+st.set_page_config(page_title='Narae', page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
 
 mode_descriptions = {
     "일상적인 대화": [
@@ -46,8 +46,8 @@ with st.sidebar:
     st.title("🔮 Menu")
     
     st.markdown(
-        "Stands Agent SDK와 Agent Skills를 이용하여 효과적인 Agent를 구현합니다." 
-        "상세한 코드는 [Github](https://github.com/kyopark2014/strands-skills)을 참조하세요."
+        "Strands Agent SDK와 MCP/SKILL를 이용하여 효과적인 Agent를 구현합니다." 
+        "상세한 코드는 [Github](https://github.com/kyopark2014/narae-project)을 참조하세요."
     )
 
     st.subheader("🐱 대화 형태")
