@@ -46,7 +46,7 @@ with st.sidebar:
     st.title("🔮 Menu")
     
     st.markdown(
-        "Strands Agent SDK와 MCP/SKILL를 이용하여 효과적인 Agent를 구현합니다." 
+        "Strands SDK와 MCP/SKILL를 이용하여 효과적인 Agent를 구현합니다." 
         "상세한 코드는 [Github](https://github.com/kyopark2014/narae-project)을 참조하세요."
     )
 
@@ -184,7 +184,9 @@ with st.sidebar:
     modelName = st.selectbox(
         '🖊️ 사용 모델을 선택하세요',
         (
+            "Claude 5.0 Sonnet",
             "Claude 4.6 Sonnet",
+            "Claude Fable 5",
             "Claude 4.7 Opus",
             "Claude 4.6 Opus",
             "Claude 4.5 Haiku",
@@ -199,7 +201,7 @@ with st.sidebar:
             "Nova Pro", 
             "Nova Lite", 
             "Nova Micro",       
-        ), index=0
+        ), index=1
     )
 
     # debug checkbox
