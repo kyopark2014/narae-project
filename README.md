@@ -130,15 +130,11 @@ execute_code 도구로 아래의 Python 코드를 실행하세요.
 | 스킬 | 설명 |
 |------|------|
 | pdf | PDF 읽기/병합/분할/OCR/폼 처리 |
-| notion | Notion API를 통한 페이지/DB/블록 관리 |
-| memory-manager | MEMORY.md 기반 대화 메모리 관리 |
 | docx | Word 문서 생성/편집/분석 |
 | xlsx | 스프레드시트 작업/모델링 |
 | pptx | PowerPoint 읽기/편집/생성 |
-| myslide | AWS 테마 프레젠테이션 생성 |
 | retrieve | Bedrock Knowledge Base RAG 검색 |
 | skill-creator | 새로운 스킬 설계/패키징 가이드 |
-| seoul-subway | 서울 지하철 실시간 도착/경로/운행 정보 |
 
 ### 스킬의 동작 흐름
 
@@ -277,42 +273,44 @@ MCP Connector는 MCP를 이용해 구현합니다. 이때 필요한 MCP 설정�
 
 ### 사전 요구사항
 
-- [AWS CLI 설치](https://docs.aws.amazon.com/ko_kr/cli/v1/userguide/cli-chap-install.html) 및 자격 증명 설정
+사내의 AWS 계정을 이용할 경우에는 [AWS CLI 설치](https://docs.aws.amazon.com/ko_kr/cli/v1/userguide/cli-chap-install.html) 및 자격 증명 설정합니다.
 
 ```text
 aws configure
 ```
 
-- Python 3.x, git, boto3
+워크샵을 이용시에는 AWS account access에서 "Get AWS CLI credentials"을 선택합니다.
+
+<img width="217" height="139" alt="image" src="https://github.com/user-attachments/assets/29b65da7-9e21-410f-b02c-f42b971c8713" />
+
+이어서 아래와 같이 복사버튼을 눌러서 AWS credential을 복사합니다.
+
+<img width="803" height="188" alt="image" src="https://github.com/user-attachments/assets/1ff0e346-f6c7-492c-9aa2-774cecf572fc" />
+
+아래와 같이 terminal을 열어서 붙여넣기 합니다.
+
+<img width="828" height="154" alt="image" src="https://github.com/user-attachments/assets/d370e7fe-b641-437d-9bff-fbd6bf5614ef" />
+
+
+Python 3.x, git, boto3를 설치합니다.
 
 ```text
-git clone https://github.com/kyopark2014/strands-skills
-cd strands-skills
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
+git clone https://github.com/kyopark2014/narae-project
+cd narae-project
 pip install -r requirements.txt
 pip install boto3
 ```
 
-### AWS 백엔드 인프라 설치
+필요시 아래처럼 로컬 환경을 만들어 이용합니다. 
 
-[installer.py](./installer.py)로 IAM, OpenSearch, Knowledge Base, CloudFront 등을 생성합니다. 이미 존재하는 공유 리소스는 재사용합니다.
-
-```text
-python installer.py
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 ```
 
-배포가 완료되면 `application/config.json`이 갱신됩니다. `sharing_url`(CloudFront)은 S3에 업로드한 `docs/`, `artifacts/` 등 정적 파일 공유용이며, Streamlit UI는 로컬에서 실행합니다.
+만약 로컬환경이 python등 필요라이브러리가 문제가 있을 경우에는 Kiro-CLI를 이용해 환경을 설정합니다.
 
-### 실행하기
-
-```text
-streamlit run application/app.py
-```
-
-브라우저에서 `http://localhost:8501`로 접속합니다.
-
-### Kiro-CLI 활용
+#### Kiro-CLI 활용
 
 설치 중 문제가 발생하면 [Kiro-cli](https://aws.amazon.com/ko/blogs/korea/kiro-general-availability/)로 코드 수정을 도울 수 있습니다.
 
@@ -325,6 +323,47 @@ curl -fsSL https://cli.kiro.dev/install | bash
 ```bash
 kiro-cli
 ```
+
+### AWS 인프라 설치
+
+[installer.py](./installer.py)로 IAM, OpenSearch, Knowledge Base, CloudFront 등을 생성합니다. 이미 존재하는 공유 리소스는 재사용합니다.
+
+```text
+python installer.py
+```
+
+배포가 완료되면 `application/config.json`이 갱신됩니다. `sharing_url`(CloudFront)은 S3에 업로드한 `docs/`, `artifacts/` 등 정적 파일 공유용이며, Streamlit UI는 로컬에서 실행합니다.
+
+
+## 실행하기
+
+### Streamlit 실행
+
+아래와 같이 streamlit을 실행합니다. 
+
+```text
+streamlit run application/app.py
+```
+
+
+### 실행 결과
+
+"강남역 맛집?"이리고 입력후 결과를 확인합니다. 여기에서는 websearch MCP를 이용해 인터넷을 검색하게 됩니다.
+
+<img width="720" height="569" alt="image" src="https://github.com/user-attachments/assets/a1f21010-96d8-4faf-8bbc-e590a6aec5e8" />
+
+결과적으로 아래와 같은 응답을 얻을 수 있습니다.
+
+<img width="671" height="751" alt="image" src="https://github.com/user-attachments/assets/74a39d22-3b33-42ad-a97a-c9760f891b1e" />
+
+이후 "서울 날씨는?"이라고 질문합니다. 아래와 같이 korea_weather라는 MCP의 get_korea_weather라는 함수를 이용해 날씨 정보를 가져옵니다.
+
+<img width="725" height="742" alt="image" src="https://github.com/user-attachments/assets/95849b7c-0bdf-4f7d-a455-409ed0c41dd9" />
+
+이때의 결과는 아래와 같습니다.
+
+<img width="668" height="736" alt="image" src="https://github.com/user-attachments/assets/ef57eccd-7c71-4fa1-bf92-fd487c9d43af" />
+
 
 ### 인프라 제거
 
@@ -356,25 +395,6 @@ aws bedrock list-foundation-models --region=us-west-2 --by-provider anthropic --
 
 
 
-### 실행 결과
-
-"us-west-2의 AWS bucket 리스트는?"와 같이 입력하면, aws cli를 통해 필요한 operation을 수행하고 얻어진 결과를 아래와 같이 보여줍니다.
-
-<img src="https://github.com/user-attachments/assets/d7a99236-185b-4361-8cbf-e5a45de07319" width="600">
-
-
-MCP로 wikipedia를 설정하고 "strand에 대해 설명해주세요."라고 질문하면 wikipedia의 search tool을 이용하여 아래와 같은 결과를 얻습니다.
-
-<img src="https://github.com/user-attachments/assets/f46e7f47-65e0-49d8-a5c0-49e834ff5de8" width="600">
-
-
-특정 Cloudwatch의 로그를 읽어서, 로그의 특이점을 확인할 수 있습니다.
-
-<img src="https://github.com/user-attachments/assets/da48a443-bd53-4c2f-a083-cfcd4e954360" width="600">
-
-"Image generation" MCP를 선택하고, "AWS의 한국인 solutions architect의 모습을 그려주세요."라고 입력하면 아래와 같이 이미지를 생성할 수 있습니다.
-
-<img src="https://github.com/user-attachments/assets/a0b46a64-5cb7-4261-82df-b5d4095fdfd2" width="600">
 
 
 ## Reference
