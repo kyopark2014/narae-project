@@ -32,7 +32,17 @@ def check_file_exists_in_s3(s3_client, bucket_name, key):
         s3_client.head_object(Bucket=bucket_name, Key=key)
         return True
     except ClientError as e:
-        if e.response['Error']['Code'] == '404':
+        error_code = e.response.get('Error', {}).get('Code')
+
+        if error_code in ('404', 'NoSuchKey', 'NotFound'):
+            return False
+        if error_code in ('403', 'AccessDenied'):
+            logger.warning(
+                "S3 object existence check was denied for s3://%s/%s. "
+                "Continuing with upload attempt because overwrite is allowed.",
+                bucket_name,
+                key,
+            )
             return False
         raise
 
