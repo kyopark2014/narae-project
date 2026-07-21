@@ -1,0 +1,10 @@
+{
+  "MCP": [
+    "korea_weather",
+    "web_fetch",
+    "websearch"
+  ],
+  "SKILL": [
+    "skill-creator"
+  ]
+}
